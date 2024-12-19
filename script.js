@@ -10,7 +10,6 @@ const images = [
 btn.addEventListener("click", download);
 
 function download() {
-    // Clear the output div before starting the download
     output.innerHTML = "";
 
     function loadimg(image) {
@@ -18,20 +17,24 @@ function download() {
             const img = new Image();
             img.src = image.url;
 
-            img.onload = () => resolve(img);  // Resolve when image is loaded
-            img.onerror = () => reject(`Failed to download the image at ${image.url}`);  // Use image.url
+            img.onload = () => {
+                console.log(`Image loaded: ${image.url}`);
+                resolve(img); 
+            };
+            img.onerror = () => reject(`Failed to download the image at ${image.url}`);  // Use image.url for errors
         });
     }
 
     Promise.all(images.map(loadimg))
         .then(loadedImages => {
             loadedImages.forEach(img => {
+                console.log(`Appending image: ${img.src}`);
                 output.appendChild(img);
             });
         })
         .catch(error => {
             const err = document.createElement("p");
-            err.innerText = error;  // Show specific error
+            err.innerText = error;
             output.appendChild(err);
         });
 }
