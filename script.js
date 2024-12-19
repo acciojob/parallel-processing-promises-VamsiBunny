@@ -39,4 +39,3 @@ function download() {
             output.appendChild(err);
         });
 }
-
