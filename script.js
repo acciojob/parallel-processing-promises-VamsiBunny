@@ -10,30 +10,28 @@ const images = [
 btn.addEventListener("click", download);
 
 function download() {
-    output.innerHTML = "";  // Clear the output div before starting
+    output.innerHTML = ""; // Clear the output div before starting
 
     function loadImage(image) {
         return new Promise((resolve, reject) => {
-            const img = new Image();  // Create a new <img> element
-            img.src = image.url;  // Set the source URL of the image
+            const img = new Image(); // Create a new <img> element
+            img.src = image.url; // Set the source URL of the image
 
-            img.onload = () => {
-                resolve(img);  // Resolve the promise when image is successfully loaded
-            };
-            img.onerror = () => reject(`Failed to download the image at ${image.url}`);  // Reject if image fails to load
+            img.onload = () => resolve(img); // Resolve when image loads successfully
+            img.onerror = () => reject(`Failed to load image's URL: ${image.url}`); // Reject if image fails to load
         });
     }
 
-    // Load all images in parallel
+    // Load all images in parallel using Promise.all
     Promise.all(images.map(loadImage))
         .then(loadedImages => {
-            // Once all images are loaded, append them to the output div
+            // Append all successfully loaded images to the output div
             loadedImages.forEach(img => {
-                output.appendChild(img);  // Append the <img> elements to the div
+                output.appendChild(img);
             });
         })
         .catch(error => {
-            // If any image fails to load, show an error message
+            // Display error if any image fails
             const err = document.createElement("p");
             err.innerText = error;
             output.appendChild(err);
